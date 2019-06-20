@@ -1,3 +1,14 @@
+# ==== THIS PROJECT'S GITIGNORE ====
+
+# Gitignore too large data files; but good practice to include smaller (truncated) data files
+data/too_large_file.csv
+
+# By default, gitignore experiment results (see exp/README.md for reasoning)
+exp/*
+!exp/README.md
+
+
+# ==== DEFAULT PYTHON GITIGNORE ====
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
