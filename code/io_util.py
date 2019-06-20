@@ -174,7 +174,10 @@ def load_args(exp_dir, filename='args.json'):
         Dictionary of loaded arguments.
     """
     with open(os.path.join(exp_dir, filename), 'r') as f:
-        return json.load(f)
+        args = json.load(f)
+        # Delete git hash
+        if 'git_hash' in args:
+            del args['git_hash']
 
 
 def save_args(args, exp_dir, filename='args.json'):
