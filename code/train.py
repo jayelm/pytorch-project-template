@@ -122,14 +122,15 @@ def run(split, epoch, model, optimizer, loss, dataloaders, args,
                 optimizer.zero_grad()
 
             # Forward pass
-            yhat = model(x)
+            scores = model(x)
 
             # Evaluate loss and accuracy
-            this_loss = loss(yhat, y)
+            this_loss = loss(scores, y)
             # Usually the metric we actually care about is not the loss function we're optimizing...
             # here contains logic for actually evaluating the end metric (in
             # this case classification accuracy)
-            this_acc = ((yhat > 0).float() == y).float().mean().item()
+            yhat = (scores > 0).float()
+            this_acc = (yhat == y).float().mean().item()
 
             if training:
                 # SGD step

@@ -303,7 +303,7 @@ def parse_args(script, desc='', **kwargs):
                                help='Use cuda')
     # Often it's useful to have a `--debug` flag which will load a much simpler
     # dataset/model that is quicker to run, so you can diagnose problems.
-    common_parser.add_argument('--debug', action='store_true')
+    common_parser.add_argument('--debug', action='store_true', help='Enable debugging')
 
     # Here we add script-specific arguments. It's a good idea to create an
     # argument group (`parser.add_argument_group`) to visually separate your

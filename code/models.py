@@ -8,11 +8,14 @@ import torch.nn as nn
 
 
 class LogisticRegression(nn.Module):
+    """
+    A logistic regression model of the form
+    P(y = 1 | x) = 1 / (1 + exp(-(mx + b)))
+    """
     def __init__(self, init_m=1.0, init_b=1.0):
         """
-        Initialize the linear regression model of the form
-        y = mx + b
-        by defining its initial parameters.
+        Initialize a logistic regression model by defining its initial
+        parameters.
 
         The ``nn.Parameter`` wrapper is needed if we intend to use vanilla
         ``torch.Tensors`` as parameters of this module, so that this object
@@ -49,8 +52,8 @@ class LogisticRegression(nn.Module):
 
         Returns
         -------
-        yhat : ``torch.Tensor`` of shape ``(batch_size, )``
-            The predicted output.
+        scores : ``torch.Tensor`` of shape ``(batch_size, )``
+            The raw logits of the predicted output
         """
-        yhat = (self.m * x) + self.b
-        return yhat
+        scores = (self.m * x) + self.b
+        return scores
