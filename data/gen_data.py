@@ -15,7 +15,7 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=42, help='Random seed')
     parser.add_argument('--w', type=int, default=3, help='W term')
     parser.add_argument('--b', type=int, default=2, help='B term')
-    parser.add_argument('--noise', type=float, default=0.5, help='Gaussian noise added to (post-sigmoid) output')
+    parser.add_argument('--noise', type=float, default=0.25, help='Gaussian noise added to (post-sigmoid) output')
     parser.add_argument('--n', type=int, default=5000, help='Amount to generate')
     parser.add_argument('--min_x', type=int, default=-5, help='Minimum x value')
     parser.add_argument('--max_x', type=int, default=5, help='Maximum x value')
