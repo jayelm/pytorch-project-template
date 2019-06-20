@@ -2,12 +2,14 @@
 Generic utility functions and classes.
 """
 
+
 class AverageMeter:
     """
     Computes and stores the average and current value of a given metric.
 
     From Mike Wu.
     """
+
     def __init__(self):
         self.reset()
 

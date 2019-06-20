@@ -2,7 +2,6 @@
 Model implementations
 """
 
-
 import torch
 import torch.nn as nn
 
@@ -12,6 +11,7 @@ class LogisticRegression(nn.Module):
     A logistic regression model of the form
     P(y = 1 | x) = 1 / (1 + exp(-(mx + b)))
     """
+
     def __init__(self, init_m=1.0, init_b=1.0):
         """
         Initialize a logistic regression model by defining its initial

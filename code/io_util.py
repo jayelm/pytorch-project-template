@@ -3,7 +3,6 @@ This file handles argument parsing and loading/serialization for all scripts in
 this repository.
 """
 
-
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 import subprocess
 import json
@@ -23,13 +22,16 @@ def current_git_hash():
         The string corresponding to the current git hash if known, else ``None`` if something failed.
     """
     try:
-        git_hash = subprocess.check_output(['git', 'describe', '--always']).strip().decode('utf-8')
+        git_hash = subprocess.check_output(['git', 'describe', '--always'
+                                            ]).strip().decode('utf-8')
         return git_hash
     except:
         return None
 
 
-def is_resumable(exp_dir, metrics_file='metrics.json', checkpoint_file='checkpoint.pth'):
+def is_resumable(exp_dir,
+                 metrics_file='metrics.json',
+                 checkpoint_file='checkpoint.pth'):
     """
     Check if an experiment directory is resumable.
 
@@ -46,12 +48,14 @@ def is_resumable(exp_dir, metrics_file='metrics.json', checkpoint_file='checkpoi
     is_resumable : ``bool``
         True if checkpoint is resumable, else False
     """
-    return (
-        os.path.exists(os.path.join(exp_dir, metrics_file)) and
-        os.path.exists(os.path.join(exp_dir, checkpoint_file)))
+    return (os.path.exists(os.path.join(exp_dir, metrics_file))
+            and os.path.exists(os.path.join(exp_dir, checkpoint_file)))
 
 
-def save_checkpoint(state, is_best, exp_dir, filename='checkpoint.pth',
+def save_checkpoint(state,
+                    is_best,
+                    exp_dir,
+                    filename='checkpoint.pth',
                     best_filename='model_best.pth'):
     """
     Save a checkpoint
@@ -100,7 +104,10 @@ def load_checkpoint(exp_dir, filename='checkpoint.pth', device=None):
     return torch.load(os.path.join(exp_dir, filename), map_location=device)
 
 
-def restore_checkpoint(model, optimizer, exp_dir, filename='checkpoint.pth',
+def restore_checkpoint(model,
+                       optimizer,
+                       exp_dir,
+                       filename='checkpoint.pth',
                        device=None):
     """
     Restore a model checkpoint into the given model and optimizer in-place.
@@ -200,7 +207,11 @@ def save_args(args, exp_dir, filename='args.json'):
     args_dict = vars(args)
     args_dict['git_hash'] = current_git_hash()
     with open(os.path.join(exp_dir, filename), 'w') as f:
-        json.dump(args_dict, f, indent=4, separators=(',', ': '), sort_keys=True)
+        json.dump(args_dict,
+                  f,
+                  indent=4,
+                  separators=(',', ': '),
+                  sort_keys=True)
 
 
 def load_metrics(exp_dir, filename='metrics.json'):
@@ -282,28 +293,32 @@ def parse_args(script, desc='', **kwargs):
     parser = ArgumentParser(
         description=desc,
         # Provide defaults in help message
-        formatter_class=ArgumentDefaultsHelpFormatter
-    )
+        formatter_class=ArgumentDefaultsHelpFormatter)
 
     # Args common to all scripts
     common_parser = parser.add_argument_group('common args')
     # Specify the data file to load.
-    common_parser.add_argument('--data_file', default='data/data_3w_2b.csv',
+    common_parser.add_argument('--data_file',
+                               default='data/data_3w_2b.csv',
                                help='Dataset to use')
     # Specify the experiment directory where all results/models from this run
     # are saved.
-    common_parser.add_argument('--exp_dir', default='exp/debug/',
+    common_parser.add_argument('--exp_dir',
+                               default='exp/debug/',
                                help='Folder to save experiment results')
     # Important: seed your experiments for reproducibility!
-    common_parser.add_argument('--seed', type=int, default=42,
+    common_parser.add_argument('--seed',
+                               type=int,
+                               default=42,
                                help='Random seed')
     # Most deep learning projects will use the GPU, but you want to be able to
     # eval off GPU if necessary. `--cuda` activates the GPU.
-    common_parser.add_argument('--cuda', action='store_true',
-                               help='Use cuda')
+    common_parser.add_argument('--cuda', action='store_true', help='Use cuda')
     # Often it's useful to have a `--debug` flag which will load a much simpler
     # dataset/model that is quicker to run, so you can diagnose problems.
-    common_parser.add_argument('--debug', action='store_true', help='Enable debugging')
+    common_parser.add_argument('--debug',
+                               action='store_true',
+                               help='Enable debugging')
 
     # Here we add script-specific arguments. It's a good idea to create an
     # argument group (`parser.add_argument_group`) to visually separate your
@@ -315,41 +330,73 @@ def parse_args(script, desc='', **kwargs):
         # other scripts you can load the arguments saved during training; this
         # prevents you from having to remember the precise details of the model
         # when you load it later
-        train_parser.add_argument('--init_m', type=float, default=1.0, help='Initial guess of m')
-        train_parser.add_argument('--init_b', type=float, default=1.0, help='Initial guess of b')
+        train_parser.add_argument('--init_m',
+                                  type=float,
+                                  default=1.0,
+                                  help='Initial guess of m')
+        train_parser.add_argument('--init_b',
+                                  type=float,
+                                  default=1.0,
+                                  help='Initial guess of b')
 
         # Training details
-        train_parser.add_argument('--epochs', type=int, default=100, help='Training epochs')
-        train_parser.add_argument('--batch_size', type=int, default=32, help='Training batch size')
-        train_parser.add_argument('--lr', type=float, default=1e-3, help='Learning rate')
+        train_parser.add_argument('--epochs',
+                                  type=int,
+                                  default=100,
+                                  help='Training epochs')
+        train_parser.add_argument('--batch_size',
+                                  type=int,
+                                  default=32,
+                                  help='Training batch size')
+        train_parser.add_argument('--lr',
+                                  type=float,
+                                  default=1e-3,
+                                  help='Learning rate')
 
         # It is a REALLY great idea to make your script resumable; in case
         # you're running on a machine and something breaks, you won't lose all
         # your progress. It's a little annoying to figure out the logic
         # required to do so, but will save you headaches later on. (Machinery
         # for resuming is already written in this demo template)
-        train_parser.add_argument('--resume', action='store_true', help='Resume from folder (if possible)')
+        train_parser.add_argument('--resume',
+                                  action='store_true',
+                                  help='Resume from folder (if possible)')
 
         # It's helpful to log progress within epochs, esp. if epochs are long;
         # set a good default for the problem you're working on
-        train_parser.add_argument('--log_interval', type=int, default=100,
-                                  help='How often (in batches) to log progress in an epoch')
+        train_parser.add_argument(
+            '--log_interval',
+            type=int,
+            default=100,
+            help='How often (in batches) to log progress in an epoch')
 
-        train_parser.add_argument('--save_interval', type=int, default=100000000, help='How often (in epochs) to save models (besides last checkpoint/best model)')
+        train_parser.add_argument(
+            '--save_interval',
+            type=int,
+            default=100000000,
+            help=
+            'How often (in epochs) to save models (besides last checkpoint/best model)'
+        )
 
         # Other helpers to speed up dataset loading if needed
-        train_parser.add_argument('--n_workers', type=int, default=0, help='Number of dataloader workers')
-        train_parser.add_argument('--pin_memory', action='store_true', help='Load data into CUDA-pinned memory')
+        train_parser.add_argument('--n_workers',
+                                  type=int,
+                                  default=0,
+                                  help='Number of dataloader workers')
+        train_parser.add_argument('--pin_memory',
+                                  action='store_true',
+                                  help='Load data into CUDA-pinned memory')
 
     if kwargs:
         # XXX: This is a dumb way of converting kwargs into a single command
         # line string, which might break - be careful!
-        args_str = [['--{}'.format(k), str(v)] if v is not True else ['--{}'.format(k)] for k, v in kwargs.items()]
+        args_str = [['--{}'.format(k), str(v)]
+                    if v is not True else ['--{}'.format(k)]
+                    for k, v in kwargs.items()]
         args_str = [item for sublist in args_str for item in sublist]
         args = parser.parse_args(args_str)
     else:
         args = parser.parse_args()
-
 
     # Often you need to perform some checks to make sure you've passed a
     # compatible set of arguments. Checking here can save you lots of pain

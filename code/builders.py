@@ -30,12 +30,10 @@ def build_dataloaders(args, random_state=None):
 
     # Wrap in DataLoaders
     for split, dataset in datas.items():
-        dataloaders[split] = DataLoader(
-            dataset,
-            batch_size=args.batch_size,
-            shuffle=True,
-            pin_memory=args.pin_memory
-        )
+        dataloaders[split] = DataLoader(dataset,
+                                        batch_size=args.batch_size,
+                                        shuffle=True,
+                                        pin_memory=args.pin_memory)
     return dataloaders
 
 

@@ -20,10 +20,9 @@ import util
 
 # Logging
 import logging
-logging.basicConfig(
-    format='%(asctime)s %(levelname)-8s %(message)s',
-    level=logging.INFO,
-    datefmt='%Y-%m-%d %H:%M:%S')
+logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
+                    level=logging.INFO,
+                    datefmt='%Y-%m-%d %H:%M:%S')
 
 
 def init_metrics():
@@ -60,11 +59,20 @@ def compute_average_metrics(meters):
         Average value of each metric
     """
     metrics = {m: vs.avg for m, vs in meters.items()}
-    metrics = {m: v if isinstance(v, float) else v.item() for m, v in metrics.items()}
+    metrics = {
+        m: v if isinstance(v, float) else v.item()
+        for m, v in metrics.items()
+    }
     return metrics
 
 
-def run(split, epoch, model, optimizer, loss, dataloaders, args,
+def run(split,
+        epoch,
+        model,
+        optimizer,
+        loss,
+        dataloaders,
+        args,
         random_state=None):
     """
     Run the model for a single epoch.
@@ -142,14 +150,15 @@ def run(split, epoch, model, optimizer, loss, dataloaders, args,
 
             # Log your progress through the epoch
             if training and batch_i % args.log_interval == 0:
-                logging.info('Epoch {}\t[{}/{} ({:.0f}%)]\tLoss: {:.6f}\t'.format(
-                    epoch, batch_i * batch_size, len(dataloader.dataset),
-                    100 * batch_i / len(dataloader), meters['loss'].avg))
+                logging.info(
+                    'Epoch {}\t[{}/{} ({:.0f}%)]\tLoss: {:.6f}\t'.format(
+                        epoch, batch_i * batch_size, len(dataloader.dataset),
+                        100 * batch_i / len(dataloader), meters['loss'].avg))
 
     metrics = compute_average_metrics(meters)
     logging.info('Epoch {}\t{} {}'.format(
-        epoch, split.upper(), ' '.join('{}: {:.4f}'.format(m, v) for m, v in metrics.items())
-    ))
+        epoch, split.upper(),
+        ' '.join('{}: {:.4f}'.format(m, v) for m, v in metrics.items())))
     return metrics
 
 
@@ -188,8 +197,22 @@ if __name__ == '__main__':
 
     for epoch in range(start_epoch, args.epochs + 1):
         # Run your train and validation steps.
-        train_metrics = run('train', epoch, model, optimizer, loss, dataloaders, args, random_state=random)
-        val_metrics = run('val', epoch, model, optimizer, loss, dataloaders, args, random_state=random)
+        train_metrics = run('train',
+                            epoch,
+                            model,
+                            optimizer,
+                            loss,
+                            dataloaders,
+                            args,
+                            random_state=random)
+        val_metrics = run('val',
+                          epoch,
+                          model,
+                          optimizer,
+                          loss,
+                          dataloaders,
+                          args,
+                          random_state=random)
 
         # Update your metrics, prepending the split name.
         for metric, value in train_metrics.items():
@@ -209,13 +232,15 @@ if __name__ == '__main__':
         # Save model and optimizer state and current epoch.
         state_dict = {
             'state_dict': model.state_dict(),
-            'optimizer' : optimizer.state_dict(),
+            'optimizer': optimizer.state_dict(),
             'epoch': epoch
         }
         io_util.save_checkpoint(state_dict, is_best, args.exp_dir)
         if (epoch % args.save_interval == 0):
-            io_util.save_checkpoint(state_dict, False, args.exp_dir,
-                                 filename='{}.pth'.format(epoch))
+            io_util.save_checkpoint(state_dict,
+                                    False,
+                                    args.exp_dir,
+                                    filename='{}.pth'.format(epoch))
 
         # Save metrics at each epoch (overriding existing file)
         io_util.save_metrics(metrics, args.exp_dir)

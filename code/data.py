@@ -27,7 +27,11 @@ def load_raw_data(csv_file):
     return csv_df.values.astype(np.float32)
 
 
-def train_val_test_split(data, val_size=0.1, test_size=0.1, random_state=None, **kwargs):
+def train_val_test_split(data,
+                         val_size=0.1,
+                         test_size=0.1,
+                         random_state=None,
+                         **kwargs):
     """
     Split data into train, validation, and test splits
 
@@ -45,10 +49,15 @@ def train_val_test_split(data, val_size=0.1, test_size=0.1, random_state=None, *
         Additional keyword args to pass to ``Data`` wrapper
     """
     idx = np.arange(data.shape[0])
-    idx_train, idx_valtest = train_test_split(idx, test_size=val_size + test_size,
-                                              random_state=random_state, shuffle=True)
-    idx_val, idx_test = train_test_split(idx_valtest, test_size=test_size / (val_size + test_size),
-                                         random_state=random_state, shuffle=True)
+    idx_train, idx_valtest = train_test_split(idx,
+                                              test_size=val_size + test_size,
+                                              random_state=random_state,
+                                              shuffle=True)
+    idx_val, idx_test = train_test_split(idx_valtest,
+                                         test_size=test_size /
+                                         (val_size + test_size),
+                                         random_state=random_state,
+                                         shuffle=True)
     return {
         'train': Data(data[idx_train], **kwargs),
         'val': Data(data[idx_val], **kwargs),
@@ -60,6 +69,7 @@ class Data(Dataset):
     """
     Wrapper around dataset so that DataLoader can easily ingest it.
     """
+
     def __init__(self, data):
         """
         Initialize a Data object.
