@@ -1,2 +1,3 @@
-# reproducible-project-template
-Template for how I normally structure machine learning projects
+# pytorch-project-template
+
+How I normally structure PyTorch projects
