@@ -24,4 +24,10 @@ publications) you can force-add the relevant results and explain them in the
 project README.
 
 In the meantime, you can manually sync gitignored experiments across
-workstations with `rsync`/`scp`.
+workstations with `rsync`/`scp`, with e.g. the following command:
+
+```bash
+# Sync .json and .csv files but ignore (potentially large) model files ending in *.pth
+rsync -zarv --include="*/" --include="*.json" --include="*.csv" --exclude="*" "remote:~/path/to/remote/exp/" "exp/"
+done
+```
