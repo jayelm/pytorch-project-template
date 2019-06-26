@@ -29,5 +29,4 @@ workstations with `rsync`/`scp`, with e.g. the following command:
 ```bash
 # Sync .json and .csv files but ignore (potentially large) model files ending in *.pth
 rsync -zarv --include="*/" --include="*.json" --include="*.csv" --exclude="*" "remote:~/path/to/remote/exp/" "exp/"
-done
 ```
